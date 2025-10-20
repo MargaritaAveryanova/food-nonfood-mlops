@@ -1,0 +1,34 @@
+stages:
+  preprocess:
+    cmd: python src/data_preprocessing.py
+    deps:
+      - src/data_preprocessing.py
+      - src/config.py
+      - data/raw
+    outs:
+      - data/processed
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - src/models/cnn_simple.py
+      - src/models/transfer_learning.py
+      - src/config.py
+    params:
+      - model.type
+      - training.epochs
+    outs:
+      - models/food_classifier.h5
+    metrics:
+      - metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - models/food_classifier.h5
+    metrics:
+      - metrics.json:
+          cache: false
