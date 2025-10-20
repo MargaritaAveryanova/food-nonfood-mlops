@@ -31,6 +31,36 @@ def create_simple_cnn(input_shape=(224, 224, 3)):
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     return model
 
+def create_transfer_learning_model(input_shape=(224, 224, 3)):
+    """Create transfer learning model with MobileNetV2"""
+    from tensorflow.keras.applications import MobileNetV2
+    from tensorflow.keras import layers, models
+    
+    # Загружаем предобученную модель
+    base_model = MobileNetV2(
+        weights='imagenet',
+        include_top=False,
+        input_shape=input_shape
+    )
+    base_model.trainable = False  # Замораживаем веса
+    
+    # Создаем новую модель поверх базовой
+    model = models.Sequential([
+        base_model,
+        layers.GlobalAveragePooling2D(),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.2),
+        layers.Dense(1, activation='sigmoid')
+    ])
+    
+    model.compile(
+        optimizer='adam',
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return model
+
 def create_data_generators():
     import tensorflow as tf
     import os
@@ -82,9 +112,13 @@ def train():
         
         train_gen, val_gen = create_data_generators()
         
+        # Выбираем модель
         if params['model']['type'] == 'simple_cnn':
             model = create_simple_cnn()
             print("✅ Simple CNN model created")
+        elif params['model']['type'] == 'mobilenet_v2':
+            model = create_transfer_learning_model()
+            print("✅ MobileNetV2 transfer learning model created")
         else:
             raise ValueError(f"Unknown model type: {params['model']['type']}")
         
