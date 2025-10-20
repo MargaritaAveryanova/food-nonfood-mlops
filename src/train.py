@@ -61,9 +61,9 @@ def create_transfer_learning_model(input_shape=(224, 224, 3)):
     
     return model
 
-def create_data_generators(use_augmented=False):
-    """Create data generators, optionally using augmented data"""
-    data_path = "data/augmented" if use_augmented else "data/raw"
+def create_data_generators(data_source="raw"):
+    """Create data generators with specified data source"""
+    data_path = "data/augmented" if data_source == "augmented" else "data/raw"
     
     train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
         rescale=1./255,
@@ -93,7 +93,7 @@ def create_data_generators(use_augmented=False):
         seed=Config.RANDOM_SEED
     )
     
-    print(f"📊 Data source: {'augmented' if use_augmented else 'original'}")
+    print(f"📊 Data source: {data_source}")
     print(f"✅ Training samples: {train_generator.samples}")
     print(f"✅ Validation samples: {val_generator.samples}")
     return train_generator, val_generator
@@ -111,9 +111,9 @@ def train():
         mlflow.log_params(params['training'])
         mlflow.log_param("model_type", params['model']['type'])
         
-        # Используем аугментированные данные если указано
-        use_augmented = params.get('data', {}).get('use_augmented', False)
-        train_gen, val_gen = create_data_generators(use_augmented=use_augmented)
+        # Используем указанный источник данных
+        data_source = params['data'].get('source', 'raw')
+        train_gen, val_gen = create_data_generators(data_source=data_source)
         
         # Выбираем модель
         if params['model']['type'] == 'simple_cnn':
