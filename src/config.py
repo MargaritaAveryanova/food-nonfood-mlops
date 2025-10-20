@@ -3,7 +3,7 @@ import os
 class Config:
     # Paths
     RAW_DATA_PATH = "data/raw"
-    PROCESSED_DATA_PATH = "data/processed" 
+    PROCESSED_DATA_PATH = "data/processed"
     MODELS_PATH = "models"
     
     # Image parameters
@@ -15,3 +15,4 @@ class Config:
     # Training
     EPOCHS = 5
     VALIDATION_SPLIT = 0.2
+    RANDOM_SEED = 42

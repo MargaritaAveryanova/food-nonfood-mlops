@@ -15,13 +15,14 @@ stages:
       - src/models/cnn_simple.py
       - src/models/transfer_learning.py
       - src/config.py
+      - data/processed
     params:
       - model.type
       - training.epochs
     outs:
       - models/food_classifier.h5
     metrics:
-      - metrics.json:
+      - train_metrics.json:
           cache: false
 
   evaluate:
@@ -29,6 +30,7 @@ stages:
     deps:
       - src/evaluate.py
       - models/food_classifier.h5
+      - data/processed
     metrics:
-      - metrics.json:
+      - eval_metrics.json:
           cache: false
