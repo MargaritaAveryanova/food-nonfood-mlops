@@ -22,3 +22,61 @@ stages:
       md5: f26f65d8c0027482ca94fb131b8e2e3c.dir
       size: 26
       nfiles: 1
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: f26f65d8c0027482ca94fb131b8e2e3c.dir
+      size: 26
+      nfiles: 1
+    - path: src/config.py
+      hash: md5
+      md5: 7adca34aa7da1554d96d30a3c70ec623
+      size: 330
+    - path: src/models/cnn_simple.py
+      hash: md5
+      md5: e4d534422c0f43e33d76f585ba34e292
+      size: 725
+    - path: src/models/transfer_learning.py
+      hash: md5
+      md5: a47c963a471aa0393ef6e9e7773b66b5
+      size: 759
+    - path: src/train.py
+      hash: md5
+      md5: fb38fd01195edaae224ecd254e9da51d
+      size: 6384
+    params:
+      params.yaml:
+        model.type: simple_cnn_v2
+        training.epochs: 10
+    outs:
+    - path: models/food_classifier.h5
+      hash: md5
+      md5: a1bf184fab10c3974af9749a3aeae903
+      size: 35935176
+    - path: train_metrics.json
+      hash: md5
+      md5: e86d1e55655f06f793b0d39eef511d46
+      size: 130
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: f26f65d8c0027482ca94fb131b8e2e3c.dir
+      size: 26
+      nfiles: 1
+    - path: models/food_classifier.h5
+      hash: md5
+      md5: a1bf184fab10c3974af9749a3aeae903
+      size: 35935176
+    - path: src/evaluate.py
+      hash: md5
+      md5: 800527510dae8b376ea62adc1a33b67a
+      size: 3328
+    outs:
+    - path: eval_metrics.json
+      hash: md5
+      md5: d022fe78d9f8ca715d7bf7a09c5fc29b
+      size: 126

@@ -3,11 +3,11 @@ data:
   img_width: 224
   batch_size: 32
   validation_split: 0.2
-  source: "raw" 
+  source: augmented
 
 training:
   epochs: 10
   learning_rate: 0.0001
 
 model:
-  type: mobilenet_v2
+  type: simple_cnn_v2
