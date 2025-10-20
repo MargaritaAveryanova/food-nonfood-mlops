@@ -1,0 +1,6 @@
+outs:
+- md5: 3fa05995bc7d76480d1178711157b2cf.dir
+  size: 1562722
+  nfiles: 360
+  hash: md5
+  path: augmented
