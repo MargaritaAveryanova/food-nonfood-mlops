@@ -3,6 +3,7 @@ data:
   img_width: 224
   batch_size: 32
   validation_split: 0.2
+  use_augmented: false 
   source: augmented
 
 training:
