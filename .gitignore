@@ -1,0 +1,7 @@
+/raw
+venv/
+venv_windows/
+env/
+ENV/
+virtualenv/
+.venv/
