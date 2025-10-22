@@ -1,2 +1,0 @@
-0_food: 0
-1_non_food: 1
