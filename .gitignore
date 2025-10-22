@@ -5,3 +5,5 @@ env/
 ENV/
 virtualenv/
 .venv/
+data/processed/
+/models

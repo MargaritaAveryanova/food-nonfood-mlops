@@ -1,0 +1,6 @@
+outs:
+- md5: 211b79769b7f14e3612d1b26641fd70e.dir
+  size: 5017766
+  nfiles: 241
+  hash: md5
+  path: combined
