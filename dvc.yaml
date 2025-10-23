@@ -1,0 +1,57 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - data/raw
+    - src/preprocess.py
+    params:
+    - data.batch_size
+    - data.image_size
+    - data.test_split
+    - data.validation_split
+    outs:
+    - data/processed/test
+    - data/processed/train
+    - data/processed/validation
+
+  augment:
+    cmd: python src/augment.py
+    deps:
+    - data/processed/train
+    - src/augment.py
+    params:
+    - augmentation.brightness_range
+    - augmentation.horizontal_flip
+    - augmentation.rotation_range
+    - augmentation.width_shift_range
+    - augmentation.zoom_range
+    outs:
+    - data/augmented
+
+  train:
+    cmd: python src/train.py
+    deps:
+    - data/processed/train
+    - data/processed/validation
+    - src/train.py
+    - src/utils.py
+    params:
+    - models.cnn
+    - models.random_forest
+    - models.transfer_learning
+    - training.current_model
+    outs:
+    - models
+    metrics:
+    - metrics/training_metrics.json:
+        cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - data/processed/test
+    - models
+    - src/evaluate.py
+    outs:
+    - metrics/test_metrics.json
+    - plots

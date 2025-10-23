@@ -1,0 +1,149 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: a90c7fb8d109d1eb0b53265c85ff51e5.dir
+      size: 1831751
+      nfiles: 40
+    - path: src/preprocess.py
+      hash: md5
+      md5: 6a34383bfdb9ee7c9889f45cbbadd750
+      size: 9162
+    params:
+      params.yaml:
+        data.batch_size: 32
+        data.image_size:
+        - 224
+        - 224
+        data.test_split: 0.2
+        data.validation_split: 0.2
+    outs:
+    - path: data/processed/test
+      hash: md5
+      md5: e3340a8ac4ed9137828da4356a1f028f.dir
+      size: 4817216
+      nfiles: 2
+    - path: data/processed/train
+      hash: md5
+      md5: 439a21540dcb08af8189a637d345bedd.dir
+      size: 15053256
+      nfiles: 2
+    - path: data/processed/validation
+      hash: md5
+      md5: 3f86183805c5b45e403e8e66843c8ec4.dir
+      size: 4215096
+      nfiles: 2
+  augment:
+    cmd: python src/augment.py
+    deps:
+    - path: data/processed/train
+      hash: md5
+      md5: 439a21540dcb08af8189a637d345bedd.dir
+      size: 15053256
+      nfiles: 2
+    - path: src/augment.py
+      hash: md5
+      md5: 9fa18cbe8d1510504d2a0d7d032c34e7
+      size: 4995
+    params:
+      params.yaml:
+        augmentation.brightness_range:
+        - 0.8
+        - 1.2
+        augmentation.horizontal_flip: true
+        augmentation.rotation_range: 20
+        augmentation.width_shift_range: 0.2
+        augmentation.zoom_range: 0.2
+    outs:
+    - path: data/augmented
+      hash: md5
+      md5: ba0b7050b6f1962f5437e0c5b67bdb7f.dir
+      size: 60212256
+      nfiles: 2
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/train
+      hash: md5
+      md5: 439a21540dcb08af8189a637d345bedd.dir
+      size: 15053256
+      nfiles: 2
+    - path: data/processed/validation
+      hash: md5
+      md5: 3f86183805c5b45e403e8e66843c8ec4.dir
+      size: 4215096
+      nfiles: 2
+    - path: src/train.py
+      hash: md5
+      md5: 157ce440efe19fce0e3a23e681b70303
+      size: 14201
+    - path: src/utils.py
+      hash: md5
+      md5: c1b9a23b58010a3f839991b86b0c34a9
+      size: 5159
+    params:
+      params.yaml:
+        models.cnn:
+          filters:
+          - 32
+          - 64
+          - 128
+          kernel_size: 3
+          pool_size: 2
+          dense_units: 128
+          dropout_rate: 0.5
+          learning_rate: 0.001
+          epochs: 10
+        models.random_forest:
+          n_estimators: 100
+          max_depth: 10
+          random_state: 42
+        models.transfer_learning:
+          base_model: MobileNetV2
+          weights: imagenet
+          include_top: false
+          dense_units: 128
+          dropout_rate: 0.3
+          learning_rate: 0.0001
+          epochs: 5
+        training.current_model: random_forest
+    outs:
+    - path: metrics/training_metrics.json
+      hash: md5
+      md5: 1222d3f7501cf6216d8093a1f6467d3e
+      size: 33
+    - path: models
+      hash: md5
+      md5: 878338c7e989cb1ad2c56bbce99d88f7.dir
+      size: 67017
+      nfiles: 1
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/test
+      hash: md5
+      md5: e3340a8ac4ed9137828da4356a1f028f.dir
+      size: 4817216
+      nfiles: 2
+    - path: models
+      hash: md5
+      md5: 878338c7e989cb1ad2c56bbce99d88f7.dir
+      size: 67017
+      nfiles: 1
+    - path: src/evaluate.py
+      hash: md5
+      md5: 12f6eab9bd798937d75deea04abfc305
+      size: 10505
+    outs:
+    - path: metrics/test_metrics.json
+      hash: md5
+      md5: b61db3bae0be5d761d0553ecd8761f7e
+      size: 126
+    - path: plots
+      hash: md5
+      md5: 223a8177e52cadb39a4f5b2c8e147407.dir
+      size: 50461
+      nfiles: 2

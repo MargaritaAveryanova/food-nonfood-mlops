@@ -1,0 +1,43 @@
+data:
+  image_size: [224, 224]
+  batch_size: 32
+  validation_split: 0.2
+  test_split: 0.2
+
+augmentation:
+  rotation_range: 20
+  width_shift_range: 0.2
+  height_shift_range: 0.2
+  horizontal_flip: True
+  brightness_range: [0.8, 1.2]
+  zoom_range: 0.2
+
+models:
+  cnn:
+    filters: [32, 64, 128]
+    kernel_size: 3
+    pool_size: 2
+    dense_units: 128
+    dropout_rate: 0.5
+    learning_rate: 0.001
+    epochs: 10
+
+  transfer_learning:
+    base_model: "MobileNetV2"
+    weights: "imagenet"
+    include_top: False
+    dense_units: 128
+    dropout_rate: 0.3
+    learning_rate: 0.0001
+    epochs: 5
+
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    random_state: 42
+
+training:
+  # current_model: "cnn"
+  # current_model: "transfer_learning"
+  current_model: "random_forest"
+  save_best_only: True
